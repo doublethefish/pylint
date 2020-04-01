@@ -78,14 +78,22 @@ TESTS_NAMES = [t.base for t in TESTS]
 
 
 @pytest.mark.parametrize("test_file", TESTS, ids=TESTS_NAMES)
-def test_functional(test_file):
+def test_functional(test_file, benchmark):
+    benchmark.group = test_file._directory  # group benchmark results by module
     LintTest = (
         LintModuleOutputUpdate(test_file)
         if UPDATE
         else testutils.LintModuleTest(test_file)
     )
     LintTest.setUp()
-    LintTest._runTest()
+    benchmark_blacklist = (
+        "access_member_before_definition",
+        "regression_property_no_member_2641",
+    )
+    if test_file.base in benchmark_blacklist:
+        LintTest._runTest()
+    else:
+        benchmark(LintTest._runTest)
 
 
 if __name__ == "__main__":
