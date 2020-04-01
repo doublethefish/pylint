@@ -97,10 +97,10 @@ class MultiReporter(BaseReporter):
 
 
 class TestRunTC:
-    def _runtest(self, args, reporter=None, out=None, code=None):
+    def _runtest(self, args, reporter=None, out=None, code=None, bench=None):
         if out is None:
             out = StringIO()
-        pylint_code = self._run_pylint(args, reporter=reporter, out=out)
+        pylint_code = self._run_pylint(args, reporter=reporter, out=out, bench=bench)
         if reporter:
             output = reporter.out.getvalue()
         elif hasattr(out, "getvalue"):
@@ -112,14 +112,20 @@ class TestRunTC:
             msg = "%s. Below pylint output: \n%s" % (msg, output)
         assert pylint_code == code, msg
 
-    def _run_pylint(self, args, out, reporter=None):
+    def _internal_run_pylint(self, args, reporter):
+        with pytest.raises(SystemExit) as cm:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                Run(args, reporter=reporter)
+        return cm.value.code
+
+    def _run_pylint(self, args, out, reporter=None, bench=None):
         args = args + ["--persistent=no"]
         with _patch_streams(out):
-            with pytest.raises(SystemExit) as cm:
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    Run(args, reporter=reporter)
-            return cm.value.code
+            if bench:
+                return bench(self._internal_run_pylint, args, reporter)
+            else:
+                return self._internal_run_pylint(args, reporter)
 
     @staticmethod
     def _clean_paths(output):
@@ -133,11 +139,16 @@ class TestRunTC:
         expected_output = self._clean_paths(expected_output)
         assert expected_output.strip() in actual_output.strip()
 
-    def test_pkginfo(self):
+    def test_pkginfo(self, benchmark):
         """Make pylint check itself."""
-        self._runtest(["pylint.__pkginfo__"], reporter=TextReporter(StringIO()), code=0)
+        self._runtest(
+            ["pylint.__pkginfo__"],
+            reporter=TextReporter(StringIO()),
+            code=0,
+            bench=benchmark,
+        )
 
-    def test_all(self):
+    def test_all(self, benchmark):
         """Make pylint check itself."""
         reporters = [
             TextReporter(StringIO()),
@@ -148,27 +159,32 @@ class TestRunTC:
             [join(HERE, "functional", "a", "arguments.py")],
             reporter=MultiReporter(reporters),
             code=2,
+            bench=benchmark,
         )
 
-    def test_no_ext_file(self):
-        self._runtest([join(HERE, "input", "noext")], code=0)
+    def test_no_ext_file(self, benchmark):
+        self._runtest([join(HERE, "input", "noext")], code=0, bench=benchmark)
 
-    def test_w0704_ignored(self):
-        self._runtest([join(HERE, "input", "ignore_except_pass_by_default.py")], code=0)
+    def test_w0704_ignored(self, benchmark):
+        self._runtest(
+            [join(HERE, "input", "ignore_except_pass_by_default.py")],
+            code=0,
+            bench=benchmark,
+        )
 
     def test_exit_zero(self):
         self._runtest(
             ["--exit-zero", join(HERE, "regrtest_data", "syntax_error.py")], code=0
         )
 
-    def test_generate_config_option(self):
-        self._runtest(["--generate-rcfile"], code=0)
+    def test_generate_config_option(self, benchmark):
+        self._runtest(["--generate-rcfile"], code=0, bench=benchmark)
 
     def test_generate_config_option_order(self):
         out1 = StringIO()
         out2 = StringIO()
-        self._runtest(["--generate-rcfile"], code=0, out=out1)
-        self._runtest(["--generate-rcfile"], code=0, out=out2)
+        self._runtest(["--generate-rcfile"], code=0, out=out1, bench=None)
+        self._runtest(["--generate-rcfile"], code=0, out=out2, bench=None)
         output1 = out1.getvalue()
         output2 = out2.getvalue()
         assert output1 == output2
@@ -204,14 +220,14 @@ class TestRunTC:
             self._run_pylint(["--rcfile=/tmp/norcfile.txt"], out=out)
         assert "The config file /tmp/norcfile.txt doesn't exist!" == str(excinfo.value)
 
-    def test_help_message_option(self):
-        self._runtest(["--help-msg", "W0101"], code=0)
+    def test_help_message_option(self, benchmark):
+        self._runtest(["--help-msg", "W0101"], code=0, bench=benchmark)
 
-    def test_error_help_message_option(self):
-        self._runtest(["--help-msg", "WX101"], code=0)
+    def test_error_help_message_option(self, benchmark):
+        self._runtest(["--help-msg", "WX101"], code=0, bench=benchmark)
 
-    def test_error_missing_arguments(self):
-        self._runtest([], code=32)
+    def test_error_missing_arguments(self, benchmark):
+        self._runtest([], code=32, bench=benchmark)
 
     def test_no_out_encoding(self):
         """test redirection of stdout with non ascii caracters
@@ -237,8 +253,8 @@ class TestRunTC:
             code=2,
         )
 
-    def test_parallel_execution_missing_arguments(self):
-        self._runtest(["-j 2", "not_here", "not_here_too"], code=1)
+    def test_parallel_execution_missing_arguments(self, benchmark):
+        self._runtest(["-j 2", "not_here", "not_here_too"], code=1, bench=benchmark)
 
     def test_py3k_option(self):
         # Test that --py3k flag works.
@@ -532,8 +548,8 @@ class TestRunTC:
             )
             assert mock_stdin.call_count == 1
 
-    def test_stdin_missing_modulename(self):
-        self._runtest(["--from-stdin"], code=32)
+    def test_stdin_missing_modulename(self, benchmark):
+        self._runtest(["--from-stdin"], code=32, bench=benchmark)
 
     @pytest.mark.parametrize("write_bpy_to_disk", [False, True])
     def test_relative_imports(self, write_bpy_to_disk, tmpdir):
