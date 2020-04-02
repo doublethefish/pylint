@@ -5,9 +5,10 @@ stages:
 - tests-pypy
 - performance-regressions
 addons:
-  artifacts: true
-  paths:
-    - $(git ls-files -o | grep "bench" | tr "\n" ":")
+  artifacts:
+    paths:
+      - $(find .tox/.benchmarks | tr "\n" ":")
+      - $(find .tox/prof | tr "\n" ":")
 jobs:
   include:
   - stage: prechecks
