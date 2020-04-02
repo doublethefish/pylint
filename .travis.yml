@@ -4,6 +4,10 @@ stages:
 - tests-cpython
 - tests-pypy
 - performance-regressions
+addons:
+  artifacts: true
+  paths:
+    - $(git ls-files -o | grep "bench" | tr "\n" ":")
 jobs:
   include:
   - stage: prechecks
