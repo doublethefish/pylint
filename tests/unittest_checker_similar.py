@@ -9,10 +9,13 @@
 # Licensed under the GPL: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # For details: https://github.com/PyCQA/pylint/blob/master/COPYING
 
+import os
 import sys
 from contextlib import redirect_stdout
 from io import StringIO
 from os.path import abspath, dirname, join
+from pylint.lint import check_parallel, PyLinter
+from pylint.testutils import TestReporter as Reporter
 
 import pytest
 
@@ -196,3 +199,43 @@ def test_no_args():
             assert ex.code == 1
         else:
             pytest.fail("not system exit")
+
+
+class TestPerformance:
+    """ NOT a rgular test, only for performance analysis - not a vert good perf test
+
+    Really this would have super deterministic input with a known set of problems, as it
+    is we scan the checkout for files and add them to the list, I mean we're not even
+    using git-checked-in files """
+
+    def _get_filepaths(self):
+        input_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        filepaths = []
+        for dirpath, dirnames, filenames in os.walk(input_dir):
+            if dirpath.endswith("__pycache__"):
+                continue
+            filepaths.extend(
+                [filename for filename in filenames if filename.endswith(".py")]
+            )
+        lots = []
+        for _ in range(1):
+            lots.extend(filepaths)
+        return lots
+
+    def test_sequential_checkers_work_single_job(self, benchmark):
+
+        linter = PyLinter(reporter=Reporter())
+        fileinfos = linter._iterate_file_descrs(self._get_filepaths())
+
+        # Add the only checker we care about in this test
+        linter.register_checker(similar.SimilarChecker(linter))
+        benchmark(check_parallel, linter, jobs=1, files=fileinfos, arguments=None)
+
+    def test_sequential_checkers_work_5_jobs(self, benchmark):
+
+        linter = PyLinter(reporter=Reporter())
+        fileinfos = linter._iterate_file_descrs(self._get_filepaths())
+
+        # Add the only checker we care about in this test
+        linter.register_checker(similar.SimilarChecker(linter))
+        benchmark(check_parallel, linter, jobs=5, files=fileinfos, arguments=None)
