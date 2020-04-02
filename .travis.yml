@@ -3,6 +3,7 @@ stages:
 - prechecks
 - tests-cpython
 - tests-pypy
+- performance-regressions
 jobs:
   include:
   - stage: prechecks
@@ -28,6 +29,9 @@ jobs:
   - stage: tests-pypy
     python: pypy3
     env: TOXENV=pypy
+  - stage: performance-regressions
+    python: 3.8
+    env: TOXENV=performance
 before_install:
 - python --version
 - uname -a
