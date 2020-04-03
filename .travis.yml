@@ -27,7 +27,7 @@ install:
 - coverage --version
 script:
 - pip install .
-- tox -e coverage-erase,$TOXENV
+- travis_wait 30 tox -e coverage-erase,$TOXENV
 after_success:
 - tox -e coveralls
 after_failure:
