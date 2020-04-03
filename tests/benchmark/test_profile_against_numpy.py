@@ -7,6 +7,7 @@
 # pylint: disable=protected-access,missing-function-docstring,no-self-use
 
 import os
+import pprint
 
 import pytest
 
@@ -18,10 +19,14 @@ def _get_py_files(scanpath):
     assert os.path.exists(scanpath), "Dir not found %s" % scanpath
 
     filepaths = []
-    for _dirpath, dirnames, filenames in os.walk(scanpath):
+    for dirpath, dirnames, filenames in os.walk(scanpath):
         dirnames[:] = [dirname for dirname in dirnames if dirname != "__pycache__"]
         filepaths.extend(
-            [filename for filename in filenames if filename.endswith(".py")]
+            [
+                os.path.join(dirpath, filename)
+                for filename in filenames
+                if filename.endswith(".py")
+            ]
         )
     return filepaths
 
@@ -30,19 +35,31 @@ def _get_py_files(scanpath):
     os.environ.get("PYTEST_PROFILE_NUMPY", False),
     reason="PYTEST_PROFILE_NUMPY, not set, assuming not a profile run",
 )
-class TestEstablishBaselineBenchmarks:
+class TestProfileAgainstNumpy:
     """ Runs against numpy """
 
     def test_run(self):
 
         numpy_checkout_path = os.path.abspath(
-            os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+            os.path.join(
+                os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+                ".downstream_checkouts",
+                "num_py",
+            )
         )
-        filepaths = _get_py_files(scanpath=numpy_checkout_path)
+        filepaths = _get_py_files(scanpath=numpy_checkout_path)[:20]
+        assert len(filepaths) == 20
+        print("Have %d files" % len(filepaths))
 
-        Run(filepaths, reporter=Reporter(), do_exit=False)
+        runner = Run(filepaths, reporter=Reporter(), do_exit=False)
 
-        # assert runner.linter.msg_status == 0, (
-        #    "Expected no errors to be thrown: %s"
-        #    % pprint.pformat(runner.linter.reporter.messages)
-        # )
+        print(
+            "Had %d files with %d messages"
+            % (len(filepaths), len(runner.linter.reporter.messages))
+        )
+        pprint.pprint(runner.linter.reporter.messages)
+
+        # one day: assert runner.linter.msg_status == 0, (
+        # one day:     "Expected no errors to be thrown: %s"
+        # one day:     % pprint.pformat(runner.linter.reporter.messages)
+        # one day: )
