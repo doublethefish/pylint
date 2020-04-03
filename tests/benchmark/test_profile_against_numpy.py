@@ -32,7 +32,7 @@ def _get_py_files(scanpath):
 
 
 @pytest.mark.skipif(
-    os.environ.get("PYTEST_PROFILE_NUMPY", False),
+    not os.environ.get("PYTEST_PROFILE_NUMPY", False),
     reason="PYTEST_PROFILE_NUMPY, not set, assuming not a profile run",
 )
 class TestProfileAgainstNumpy:
