@@ -47,8 +47,7 @@ class TestProfileAgainstNumpy:
                 "num_py",
             )
         )
-        filepaths = _get_py_files(scanpath=numpy_checkout_path)[:20]
-        assert len(filepaths) == 20
+        filepaths = _get_py_files(scanpath=numpy_checkout_path)
         print("Have %d files" % len(filepaths))
 
         runner = Run(filepaths, reporter=Reporter(), do_exit=False)
