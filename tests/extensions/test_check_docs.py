@@ -13,6 +13,9 @@
 # Licensed under the GPL: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # For details: https://github.com/PyCQA/pylint/blob/master/COPYING
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=function-redefined,too-many-public-methods
+
 """Unit tests for the pylint checkers in :mod:`pylint.extensions.check_docs`,
 in particular the parameter documentation checker `DocstringChecker`
 """

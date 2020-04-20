@@ -8,7 +8,6 @@
 """Tests for the pylint checker in :mod:`pylint.extensions.emptystring
 """
 
-import os
 import os.path as osp
 import unittest
 
@@ -16,6 +15,9 @@ from pylint import checkers
 from pylint.extensions.comparetozero import CompareToZeroChecker
 from pylint.lint import PyLinter
 from pylint.reporters import BaseReporter
+
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=abstract-method
 
 
 class CompareToZeroTestReporter(BaseReporter):

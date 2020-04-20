@@ -25,6 +25,9 @@ import astroid
 from pylint.checkers import BaseChecker, base
 from pylint.testutils import CheckerTestCase, Message, set_config
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=undefined-loop-variable
+
 
 class TestDocstring(CheckerTestCase):
     CHECKER_CLASS = base.DocStringChecker

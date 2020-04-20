@@ -19,6 +19,8 @@ from pylint import checkers
 from pylint.lint import PyLinter
 from pylint.reporters.text import ParseableTextReporter, TextReporter
 
+# pylint: disable=unused-argument,redefined-outer-name,no-member
+
 
 @pytest.fixture(scope="module")
 def reporter(reporter):

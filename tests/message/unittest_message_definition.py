@@ -12,6 +12,10 @@ from pylint.exceptions import InvalidMessageError
 from pylint.message import MessageDefinition
 
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=no-self-use
+
+
 @pytest.mark.parametrize(
     "msgid,expected",
     [

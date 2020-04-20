@@ -14,6 +14,9 @@ import pytest
 
 from pylint.extensions.check_elif import ElseifUsedChecker
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=redefined-outer-name,unused-argument
+
 
 @pytest.fixture(scope="module")
 def checker(checker):

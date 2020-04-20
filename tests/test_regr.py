@@ -23,6 +23,10 @@ import pytest
 
 import pylint.testutils as testutils
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=redefined-outer-name,unused-argument
+
+
 REGR_DATA = join(dirname(abspath(__file__)), "regrtest_data")
 sys.path.insert(1, REGR_DATA)
 

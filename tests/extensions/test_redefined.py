@@ -14,6 +14,9 @@ import pytest
 from pylint.extensions.redefined_variable_type import MultipleTypesChecker
 from pylint.lint import fix_import_path
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=redefined-outer-name,unused-argument
+
 EXPECTED = [
     "Redefinition of self.var1 type from int to float",
     "Redefinition of a_str type from bool to float",

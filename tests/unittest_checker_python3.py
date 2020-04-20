@@ -21,6 +21,9 @@ from pylint import testutils
 from pylint.checkers import python3 as checker
 from pylint.interfaces import INFERENCE, INFERENCE_FAILURE
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=fixme,redefined-outer-name,too-many-public-methods
+
 # TODO(cpopa): Port these to the functional test framework instead.
 
 

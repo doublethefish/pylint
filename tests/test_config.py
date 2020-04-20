@@ -1,7 +1,5 @@
 import unittest.mock
 
-import pytest
-
 import pylint.lint
 
 

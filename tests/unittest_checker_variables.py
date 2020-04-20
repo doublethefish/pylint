@@ -22,6 +22,9 @@ from pylint.checkers import variables
 from pylint.interfaces import UNDEFINED
 from pylint.testutils import CheckerTestCase, Message, linter, set_config
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=unused-argument,no-self-use
+
 
 class TestVariablesChecker(CheckerTestCase):
 

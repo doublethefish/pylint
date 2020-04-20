@@ -1,6 +1,9 @@
 # Licensed under the GPL: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # For details: https://github.com/PyCQA/pylint/blob/master/COPYING
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=redefined-outer-name,unused-import
+
 import pytest
 
 from pylint.exceptions import InvalidMessageError, UnknownMessageError

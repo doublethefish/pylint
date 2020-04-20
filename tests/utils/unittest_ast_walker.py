@@ -8,6 +8,8 @@ import astroid
 from pylint.checkers.utils import check_messages
 from pylint.utils import ASTWalker
 
+# pylint: disable=unused-argument
+
 
 class TestASTWalker:
     class MockLinter:

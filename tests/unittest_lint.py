@@ -51,6 +51,11 @@ from pylint.lint import ArgumentPreprocessingError, PyLinter, Run, preprocess_op
 from pylint.reporters import text
 from pylint.utils import FileState, tokenize_module
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=no-member,else-if-used,missing-type-doc,redefined-outer-name
+# pylint: disable=unused-argument,misplaced-comparison-constant,bare-except,no-self-use
+# pylint: disable=too-many-ancestors
+
 if os.name == "java":
     if os._name == "nt":
         HOME = "USERPROFILE"

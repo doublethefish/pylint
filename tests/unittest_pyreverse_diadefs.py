@@ -28,6 +28,9 @@ from pylint.pyreverse.diadefslib import (
 from pylint.pyreverse.inspector import Linker
 from unittest_pyreverse_writer import Config, get_project
 
+# pylint: disable=fixme,redefined-outer-name,misplaced-comparison-constant,no-self-use
+# pylint: disable=singleton-comparison
+
 
 def _process_classes(classes):
     """extract class names of a list"""

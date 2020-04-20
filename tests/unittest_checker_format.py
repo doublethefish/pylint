@@ -31,6 +31,9 @@ from pylint import lint, reporters
 from pylint.checkers.format import FormatChecker
 from pylint.testutils import CheckerTestCase, Message, _tokenize_str, set_config
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=implicit-str-concat
+
 
 class TestMultiStatementLine(CheckerTestCase):
     CHECKER_CLASS = FormatChecker

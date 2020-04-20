@@ -14,6 +14,9 @@ from pylint.checkers import stdlib
 from pylint.interfaces import UNDEFINED
 from pylint.testutils import CheckerTestCase, Message
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=unused-argument
+
 
 @contextlib.contextmanager
 def _add_transform(manager, node, transform, predicate=None):

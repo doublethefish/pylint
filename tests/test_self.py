@@ -41,6 +41,10 @@ from pylint.reporters import JSONReporter
 from pylint.reporters.text import BaseReporter, ColorizedTextReporter, TextReporter
 from pylint.utils import utils
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=abstract-method,super-init-not-called,no-self-use
+# pylint: disable=misplaced-comparison-constant,too-many-public-methods
+
 HERE = abspath(dirname(__file__))
 CLEAN_PATH = re.escape(dirname(dirname(__file__)) + "/")
 

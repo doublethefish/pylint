@@ -9,6 +9,9 @@ import astroid
 from pylint.checkers import strings
 from pylint.testutils import CheckerTestCase, Message
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=no-self-use
+
 TEST_TOKENS = (
     '"X"',
     "'X'",

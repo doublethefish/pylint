@@ -19,6 +19,9 @@ import pytest
 from pylint.checkers import typecheck
 from pylint.testutils import CheckerTestCase, Message, set_config
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=import-outside-toplevel
+
 
 def c_extension_missing():
     """Coverage module has C-extension, which we can reuse for test"""

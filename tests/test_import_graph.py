@@ -18,6 +18,9 @@ import pylint.testutils as testutils
 from pylint.checkers import imports, initialize
 from pylint.lint import PyLinter
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=redefined-outer-name,bare-except
+
 
 @pytest.fixture
 def dest():

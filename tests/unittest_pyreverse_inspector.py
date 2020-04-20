@@ -16,6 +16,8 @@ from astroid import bases, nodes
 from pylint.pyreverse import inspector
 from unittest_pyreverse_writer import get_project
 
+# pylint: disable=redefined-outer-name
+
 
 @pytest.fixture
 def project():

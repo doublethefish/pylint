@@ -13,6 +13,7 @@
 unit test for visitors.diadefs and extensions.diadefslib modules
 """
 
+# pylint: disable=bare-except
 
 import codecs
 import os

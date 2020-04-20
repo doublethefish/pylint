@@ -14,6 +14,9 @@ import pytest
 
 from pylint.extensions import mccabe
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=redefined-outer-name,unused-argument
+
 EXPECTED_MSGS = [
     "'f1' is too complex. The McCabe rating is 1",
     "'f2' is too complex. The McCabe rating is 1",

@@ -16,6 +16,9 @@ import pytest
 
 from pylint.checkers import utils
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=no-self-use,misplaced-comparison-constant
+
 
 @pytest.mark.parametrize(
     "name,expected",

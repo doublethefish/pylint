@@ -1,6 +1,9 @@
 # Licensed under the GPL: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # For details: https://github.com/PyCQA/pylint/blob/master/COPYING
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=unused-import
+
 from contextlib import redirect_stdout
 from io import StringIO
 
@@ -11,6 +14,9 @@ from pylint.exceptions import InvalidMessageError, UnknownMessageError
 from pylint.message import MessageDefinition
 
 from .generic_fixtures import empty_store, store
+
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=redefined-outer-name,no-self-use,misplaced-comparison-constant
 
 
 @pytest.mark.parametrize(

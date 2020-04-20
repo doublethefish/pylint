@@ -6,6 +6,9 @@ import pytest
 from pylint.checkers import BaseChecker
 from pylint.message import MessageDefinitionStore, MessageIdStore
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=redefined-outer-name
+
 
 @pytest.fixture
 def msgid():

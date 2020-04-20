@@ -15,6 +15,9 @@ import astroid
 from pylint.extensions.docparams import DocstringParameterChecker
 from pylint.testutils import CheckerTestCase, Message, set_config
 
+# IMPORTANT: Please help remove this|these disable configs
+# pylint: disable=too-many-public-methods
+
 
 class TestDocstringCheckerRaise(CheckerTestCase):
     """Tests for pylint_plugin.RaiseDocChecker"""
