@@ -2,6 +2,8 @@
 # For details: https://github.com/PyCQA/pylint/blob/master/COPYING
 
 import collections
+import hashlib
+import os.path
 
 from astroid import nodes
 
@@ -11,8 +13,9 @@ from pylint.constants import MSG_STATE_SCOPE_MODULE, WarningScope
 class FileState:
     """Hold internal state specific to the currently analyzed file"""
 
-    def __init__(self, modname=None):
+    def __init__(self, modname=None, filepath=None):
         self.base_name = modname
+        self.filepath = filepath
         self._module_msgs_state = {}
         self._raw_module_msgs_state = {}
         self._ignored_msgs = collections.defaultdict(set)
@@ -134,3 +137,11 @@ class FileState:
 
     def get_effective_max_line_number(self):
         return self._effective_max_line_number
+
+    def md5(self):
+        hash_md5 = hashlib.md5()
+        assert os.path.exists(self.filepath), self.filepath
+        with open(self.filepath, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        return hash_md5.hexdigest()

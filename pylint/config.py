@@ -65,8 +65,22 @@ def _get_pdata_path(base_name, recurs):
     return os.path.join(PYLINT_HOME, "%s%s%s" % (base_name, recurs, ".stats"))
 
 
+def _get_pcache_path(base_name, recurs):
+    base_name = base_name.replace(os.sep, "_")
+    return os.path.join(PYLINT_HOME, "%s%s%s" % (base_name, recurs, ".cache"))
+
+
 def load_results(base):
     data_file = _get_pdata_path(base, 1)
+    try:
+        with open(data_file, "rb") as stream:
+            return pickle.load(stream)
+    except Exception:  # pylint: disable=broad-except
+        return {}
+
+
+def load_cache(base):
+    data_file = _get_pcache_path(base, 1)
     try:
         with open(data_file, "rb") as stream:
             return pickle.load(stream)
@@ -84,6 +98,20 @@ def save_results(results, base):
     try:
         with open(data_file, "wb") as stream:
             pickle.dump(results, stream)
+    except OSError as ex:
+        print("Unable to create file %s: %s" % (data_file, ex), file=sys.stderr)
+
+
+def save_cache(cache, base):
+    if not os.path.exists(PYLINT_HOME):
+        try:
+            os.mkdir(PYLINT_HOME)
+        except OSError:
+            print("Unable to create directory %s" % PYLINT_HOME, file=sys.stderr)
+    data_file = _get_pcache_path(base, 1)
+    try:
+        with open(data_file, "wb") as stream:
+            pickle.dump(cache, stream)
     except OSError as ex:
         print("Unable to create file %s: %s" % (data_file, ex), file=sys.stderr)
 

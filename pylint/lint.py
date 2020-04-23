@@ -1021,18 +1021,31 @@ class PyLinter(
         :param str modname: name of the checked Python module
         """
         self.set_current_module(name, filepath)
-        # get the module representation
-        ast_node = get_ast(filepath, name)
-        if ast_node is None:
-            return
+        self.file_state = FileState(modname, filepath=filepath)
+        previous_md5 = config.load_cache(self.file_state.base_name)
+        md5 = self.file_state.md5()
+        use_cache = previous_md5 == md5
 
-        self._ignore_file = False
+        if use_cache:
+            print("Using cache for %s"%filepath)
+            previous_stats = config.load_results(self.file_state.base_name)
+            self.reporter.on_close(self.stats, previous_stats)
+        if not use_cache:
+            config.save_cache(md5, self.file_state.base_name)
 
-        self.file_state = FileState(modname)
-        # fix the current file (if the source file was not available or
-        # if it's actually a c extension)
-        self.current_file = ast_node.file  # pylint: disable=maybe-no-member
-        check_astroid_module(ast_node)
+            print("NOT %s"%filepath)
+            # get the module representation
+            ast_node = get_ast(filepath, name)
+            if ast_node is None:
+                return
+
+            self._ignore_file = False
+
+            # fix the current file (if the source file was not available or
+            # if it's actually a c extension)
+            self.current_file = ast_node.file  # pylint: disable=maybe-no-member
+            check_astroid_module(ast_node)
+            config.save_results(self.stats, self.file_state.base_name)
         # warn about spurious inline messages handling
         spurious_messages = self.file_state.iter_spurious_suppression_messages(
             self.msgs_store
@@ -1245,6 +1258,7 @@ class PyLinter(
             score_value = self._report_evaluation()
             # save results if persistent run
             if self.config.persistent:
+                raise RuntimeError()
                 config.save_results(self.stats, self.file_state.base_name)
         else:
             self.reporter.on_close(self.stats, {})
